@@ -12,7 +12,7 @@ public class LibraryManagementSystem {
 
     public static void main(String[] args) {
         //import from file
-        import();
+        //import();
         
         
        login();
@@ -47,11 +47,11 @@ public class LibraryManagementSystem {
                 System.out.print("  Enter username: ");
                 String username = sc.nextLine();
                 
-                for(int = 0; i<users; i++){
-                    if(u[i].usercheck(username)){
-                    
-                    }
-                }
+//                for(int = 0; i<users; i++){
+//                    if(u[i].usercheck(username)){
+//                    
+//                    }
+//                }
                 
                 
                 break;
