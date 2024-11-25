@@ -35,7 +35,7 @@ public class Login {
         sc.nextLine();
         System.out.print(" Contact #: ");
         sc.nextLine();
-        
+        return true;
     }
     
     //test if input user and pass matches ones in the array database

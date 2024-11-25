@@ -8,6 +8,12 @@ package LibraryManagementSystem;
  *
  * @author ZEN
  */
-public class Ebook {
+public class Ebook extends Books{
+    String type;
     
+    public Ebook(int id, String title, String author, int quantity){
+        super(id, title, author, quantity);
+        this.type = "E-Book";
+        
+    }
 }
