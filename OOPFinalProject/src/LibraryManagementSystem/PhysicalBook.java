@@ -6,14 +6,8 @@ package LibraryManagementSystem;
 
 /**
  *
- * @author 202312049
+ * @author ZEN
  */
-public class Users{
-    
-    int borrowed;
-   
-    Users(String username, String password, int cellNo){
-        super(username,password, cellNo);
-    }
+public class PhysicalBook {
     
 }
