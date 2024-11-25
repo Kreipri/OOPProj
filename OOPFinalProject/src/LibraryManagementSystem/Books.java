@@ -8,13 +8,15 @@ package LibraryManagementSystem;
 
 public class  Books {
     private String title;
-    private int stocks;
+    private int quantity;
     private String author;
+    private int id;
     
-    public Books(String title,String author, int stocks){
+    public Books(int id, String title,String author, int quantity){
+        this.id = id;
         this.title = title;
         this.author = author;
-        this.stocks = stocks;
+        this.quantity = quantity;
     }
     
     public String getTitle(){
@@ -25,12 +27,16 @@ public class  Books {
         return author;
     }
     
-    public int getStocks(){
-        return stocks;
+    public int getId(){
+        return id;
     }
     
-    public void displayDetails(){
-      //System.out.println("| Title                                    |        Author       |");
-        System.out.printf( "| %-40s | %-19s |\n", title, author);
+    public int getQuantity(){
+        return quantity;
+    }
+    
+    public void displayBook(){
+      //System.out.println("| ID | Title                                    |        Author       |");
+        System.out.printf( "| %-2d | %-40s | %-19s |\n", id, title, author);
     }
 }

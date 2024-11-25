@@ -13,7 +13,7 @@ public class Users{
     int borrowed;
    
     Users(String username, String password, int cellNo){
-        super(username,password, cellNo);
+//        super(username,password, cellNo);
     }
     
 }
