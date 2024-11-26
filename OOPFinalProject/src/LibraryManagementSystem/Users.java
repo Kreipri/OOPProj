@@ -3,17 +3,31 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package LibraryManagementSystem;
+import java.util.*;
 
 /**
  *
  * @author 202312049
  */
-public class Users{
-    
-    int borrowed;
+public abstract class Users extends People{
+    private String userType; //Regular or Special
+    private List<String> borrowedBooks;
    
-    Users(String username, String password, int cellNo){
-//        super(username,password, cellNo);
+    public Users(String username, String password, String name, String cellNo, String userType){
+        super(username, password, name, cellNo);
+        this.userType = userType;
+        this.borrowedBooks = new ArrayList<>();
     }
     
+    public String getUserType(){
+        return userType;
+    }
+    
+    public abstract void displayUser();
+    
+    
+    public void displayBorrowed(){
+        
+    }
+    //public abstract void borrowBook(BorrowDetails borrowDetails);
 }

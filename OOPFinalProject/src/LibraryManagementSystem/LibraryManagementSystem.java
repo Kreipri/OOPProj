@@ -10,16 +10,32 @@ import java.io.*;
  */
 public class LibraryManagementSystem {
     static ArrayList<Books> books;
+    static ArrayList<Users> users;
     static Scanner sc = new Scanner(System.in);
     
     
     public static void main(String[] args) {
         books = new ArrayList<>();
-        boolean loop = true;
+        users = new ArrayList<>();
+       
         //import from file
+        importUsers();
         importBooks();
         
-        login();
+        Login login = new Login(users);
+        
+        boolean loop = true;
+        Users loggedInUser = null;
+        
+        while(loggedInUser == null){
+            loggedInUser = login(login);
+        }
+        
+        ;
+        
+        loop = true;
+        
+        System.out.println(" Hello, "+ loggedInUser.getName() + "!");
         
         while(loop){
             System.out.println( "         __...--~~~~~-._   _.-~~~~~--...__\n" +
@@ -34,7 +50,7 @@ public class LibraryManagementSystem {
             System.out.println("+-----------------------------------------------+");
             System.out.println("|              [1] Borrow Book                  |");
             System.out.println("|              [2] Return Book                  |");
-            System.out.println("|              [3] Books Borrowed               |");
+            System.out.println("|              [3] User Details                 |");
             System.out.println("|                                               |");
             System.out.println("|              [0] Exit                         |");
             System.out.println("|               --- Group 7 ---                 |");
@@ -49,10 +65,10 @@ public class LibraryManagementSystem {
       
                     break;
                 case 2:
-                    //TBA
+                    
                     break;
                 case 3:
-                    //TBA
+                    userDetails(loggedInUser);
                     break;
                 case 0:
                     return;
@@ -71,6 +87,23 @@ public class LibraryManagementSystem {
        
     }
     
+    public static void userDetails(Users user){
+        System.out.println("+------------------------------------+");
+        System.out.println("|            User Details            |");
+        System.out.println("+------------------------------------+");
+        System.out.printf( "| Username: %24s |", user.getUser());
+        System.out.printf( "| Name: %28s |", user.getName());
+        System.out.printf( "| Contact #: %23s |", user.getNumber());
+        System.out.printf( "| User type: %23s |", user.getUserType());
+        System.out.println("+------------------------------------+");
+        
+        System.out.println("+-------------------------------------------------------------------------+");
+        System.out.println("|                            Borrowed Books                               |");
+        System.out.println("+-------------------------------------------------------------------------+");
+        System.out.println("|  Title                                 |      Author      | Return Date |");
+        System.out.println("+-------------------------------------------------------------------------+");
+        
+    }
     
     
     public static void importBooks(){
@@ -132,7 +165,7 @@ public class LibraryManagementSystem {
                 System.out.println("+---------------------------------------------------------------------+");
                 System.out.println("| ID | Title                                    |        Author       |");
                 chosenBookObj.displayBook();
-                System.out.printf( "|   Copies available: %d                                              |\n", (chosenBookObj.getQuantity()));
+                System.out.printf( "|   Copies available: %3d                                             |\n", (chosenBookObj.getQuantity()));
                 System.out.println("+---------------------------------------------------------------------+");
                 System.out.println("                 [1]  Borrow              [0]  Return");
                 System.out.print(  " Choice: ");
@@ -197,9 +230,12 @@ public class LibraryManagementSystem {
                     }    
     }
     
+    public static void importUsers(){
+        users.add(new RegularUser("RegUserName","RegPass","Reg", "01234567890"));
+        users.add(new SpecialUser("StudentUser","StuPass","Student","01234567890","Student"));
+    }
     
-    public static void login(){
-        Scanner sc = new Scanner(System.in);
+    public static Users login(Login login){
         
        System.out.println( "         __...--~~~~~-._   _.-~~~~~--...__\n" +
                             "      //               `V'               \\\\ \n" +
@@ -212,47 +248,124 @@ public class LibraryManagementSystem {
         System.out.println("|   Welcome to the Library Management System!   |");
         System.out.println("+-----------------------------------------------+");
         System.out.println("|   [1] Login as User      [2] Login as Staff   |");
-        System.out.println("|                --- Group 7 ---                |");
+        System.out.println("|              --- Group 7 ---                  |");
         System.out.println("+-----------------------------------------------+");
         System.out.print("  Choice: ");
+        int choice = 9;
         
-        int choice = sc.nextInt();
-        sc.nextLine(); //to not skip lines
+        try{
+            choice = sc.nextInt();
+            sc.nextLine();
+        }catch(IllegalArgumentException e){
+            System.out.println("+----------------------------------+");
+            System.out.println("| Invalid input. Please try again. |");
+            System.out.println("+----------------------------------+");
+        }
         
         switch(choice){
             case 1:
                 boolean loop = true;
                 while(true){
-                    System.out.println("+----------------------------+");
-                    System.out.println("|         User Login         |");
-                    System.out.println("+----------------------------+");
-                    System.out.print("  Enter username: ");
+                    System.out.println("+----------------------------------+");
+                    System.out.println("|            User Login            |");
+                    System.out.println("+----------------------------------+");
+                    System.out.print(" Enter username: ");
                     String username = sc.nextLine();
                     System.out.print(" Enter password: ");
                     String password = sc.nextLine();
-                    Login login = new Login(username, password);
-                    if(login.authenticate(username, password)){
-
+                    if(login.login(username, password)){
+                        return login.getLoggedInUser();
                     }else{
-                        System.out.println("Sorry, there is no user with those details."
-                                + "\n    [1] - Try Again   [2] - Sign up" );
+                        while(loop){
+                            System.out.println("+-----------------------------------------------+");
+                        System.out.println("|  Sorry, there is no user with those details.  |\n"
+                                        +  "|       [1] - Try Again   [2] - Sign up         |" );
+                        System.out.println("+-----------------------------------------------+");
+                        System.out.print(" Choice: ");
+                        try{
+                                choice = sc.nextInt();
+                                sc.nextLine();
+                            }catch(IllegalArgumentException e){
+                                System.out.println("+----------------------------------+");
+                                System.out.println("| Invalid input. Please try again. |");
+                                System.out.println("+----------------------------------+");
+                                continue;
+                            }
+                        
                         switch(choice){
                              case 1:
                                  break;
                             case 2:
-                                 login.signup();
-                                 loop = false;
-                                 break;
+                                
+                                System.out.println("+-------------------------------------+");
+                                System.out.println("|             User Signup             |");
+                                System.out.println("+-------------------------------------+");
+                                System.out.print(  "  Enter Username: ");
+                                String user = sc.nextLine();
+                                login.checkUniqueUser(username);
+                                System.out.print(  "  Enter Password: ");
+                                String pass = sc.nextLine();
+                                System.out.print(" Enter Name:");
+                                String name = sc.nextLine();
+                                System.out.print(" Enter Contact Number:");
+                                String cell = sc.nextLine();
+                                String userType = null;
+                                
+                                loop = true;
+                                while(loop){
+                                    System.out.print(" Are you a: ");
+                                    System.out.println(" [1] Student"
+                                                     + " [2] Person with Disability "
+                                                     + " [3] Senior Citizen"
+                                                     + " [4] None of the above");
+                                    try{
+                                        choice = sc.nextInt();
+                                    }catch(IllegalArgumentException e){
+                                        System.out.println("+----------------------------------+");
+                                        System.out.println("| Invalid input. Please try again. |");
+                                        System.out.println("+----------------------------------+");
+                                    }
+                                    
+                                    
+
+                                    switch(choice){
+                                        case 1: 
+                                            userType = "Student";
+                                            loop = false;
+                                            break;
+                                        case 2: 
+                                            userType = "PWD";
+                                            loop = false;
+                                            break;
+                                        case 3:
+                                            userType = "Senior Citizen";
+                                            loop = false;
+                                            break;
+                                        case 4:
+                                            userType = "Regular";
+                                            loop = false;
+                                            break;
+                                        default:
+                                            System.out.println("+----------------------------------+");
+                                            System.out.println("| Invalid input. Please try again. |");
+                                            System.out.println("+----------------------------------+");
+                                    }
+                                }
+                                login.signup(user, pass, name, cell, userType);
+                                loop = false;
+                                break;
+
                             default:
                                 System.out.println("+----------------------------------+");
                                 System.out.println("| Invalid input. Please try again. |");
                                 System.out.println("+----------------------------------+");
 
                             }
+                        }
+                        
                     }
                 }
             case 2:
-                System.out.println("");
                 break;
             default:
                 System.out.println("+----------------------------------+");
@@ -260,5 +373,6 @@ public class LibraryManagementSystem {
                 System.out.println("+----------------------------------+");
                 break;
         }
+        return null;
     }
 }
