@@ -54,6 +54,10 @@ public class People{
         password = pass;
     } 
     
+    public String getPassword(){
+        return password;
+    }
+    
     public String getNumber(){
         return cellNo;
     }

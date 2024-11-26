@@ -14,6 +14,7 @@ import java.time.LocalDate;
 
 public class BorrowDetails {
     private int borrowID;         // List of Borrow IDs
+    private ArrayList<Books> bookList;
     private Books borrowedBook;
     private LocalDate borrowDate;       // List of borrow dates
     private LocalDate returnDate;       // List of return dates
@@ -21,7 +22,7 @@ public class BorrowDetails {
     
 //    static DateTimeFormatter dateFormat = new DateTimeFormatter.ofPattern("MM-dd-yyyy");
 
-    public BorrowDetails() {
+    public BorrowDetails(ArrayList<Books> bookList) {
 //        this.borrowID = new ArrayList<>();
 //        this.borrowDate = new ArrayList<>();
 //        this.returnDate = new ArrayList<>();
@@ -35,6 +36,23 @@ public class BorrowDetails {
         this.borrowDate = LocalDate.now();
         this.returnDate = (LocalDate.now()).plusDays(days);
     }
+    
+    public BorrowDetails(Books book, LocalDate borrowDate, LocalDate returnDate){
+        this.borrowID = book.getId();
+        this.borrowedBook = book;
+        this.borrowDate = borrowDate;
+        this.returnDate = returnDate;
+    }
+
+    public Books matchId(int id){
+        for(Books book : bookList){
+                if(id == book.getId()){
+                    return book;
+                }
+            }
+        return null;
+    }
+    
 
     public Books getBorrowedBook(){
         return borrowedBook;
@@ -62,6 +80,7 @@ public class BorrowDetails {
         return returnDate;
     }
 
+
 //    public void addReturnDate(int days) {
 //        this.returnDate = (LocalDate.now()).plusDays(days);
 //    }
@@ -84,13 +103,10 @@ public class BorrowDetails {
 //    }
 
     // display borrow deets
-//    public void displayBorrowDetails() {
-//        System.out.println("Borrow Details:");
-//        for (int i = 0; i < borrowID.size(); i++) {
-//            System.out.printf("ID: %d, Borrow Date: %s, Return Date: %s, Borrower: %s%n",
-//                    borrowID.get(i), borrowDate.get(i), returnDate.get(i), borrowerNames.get(i));
-//        }
-//    }
+    public void displayBorrowDetails() {
+        System.out.println("Borrow Details:");
+            System.out.printf("ID: %d, Borrow Date: %s, Return Date: %s", borrowID, borrowDate, returnDate); 
+    }
 /*
     // save to file
     public void saveToFile(String filename) {

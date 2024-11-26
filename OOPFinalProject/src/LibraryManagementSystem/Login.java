@@ -14,6 +14,7 @@ public class Login {
   
     public Login(LibrarySystem lib){
         this.users = lib.getAllUsers();
+        
         this.loggedInUser = null;
     }
     
@@ -103,16 +104,16 @@ public class Login {
                     if(login.login(username, password)){
                         return login.getLoggedInUser();
                     }else{
-                        while(loop){
-                            System.out.println("+-----------------------------------------------+");
-                            System.out.println("|  Sorry, there is no user with those details.  |"
-                                            +  "|       [1] - Try Again   [2] - Sign up         |" );
-                            System.out.println("+-----------------------------------------------+");
-                            System.out.print(" Choice: ");
-                            choice = enterChoice();
-                        
+                      
+                        System.out.println("+-----------------------------------------------+");
+                        System.out.println("|  Sorry, there is no user with those details.  |\n"
+                                        +  "|       [1] - Try Again   [2] - Sign up         |" );
+                        System.out.println("+-----------------------------------------------+");
+                        System.out.print(" Choice: ");
+                        choice = enterChoice();
+
                         switch(choice){
-                             case 1:
+                            case 1:
                                  break;
                             case 2:
                                 signup();
@@ -124,11 +125,12 @@ public class Login {
                                 System.out.println("+----------------------------------+");
 
                             }
-                        }
+                        
                         
                     }
                 }
             case 2:
+                System.out.println("TBA");
                 break;
             case 3:
                 signup();
@@ -204,8 +206,8 @@ public class Login {
     }
     
     public static void printErr(){
-                                System.out.println("+----------------------------------+");
-                                System.out.println("| Invalid input. Please try again. |");
-                                System.out.println("+----------------------------------+");
+        System.out.println("+----------------------------------+");
+        System.out.println("| Invalid input. Please try again. |");
+        System.out.println("+----------------------------------+");
     }
 }

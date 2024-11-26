@@ -3,11 +3,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package LibraryManagementSystem;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
+import java.time.LocalDate;
 /**
  *
  * @author ZEN
@@ -17,33 +15,40 @@ public class LibrarySystem {
     static private ArrayList<BorrowDetails> borrowList;
     static private ArrayList<Books> bookList;
     
+    
     static private Map<Users, ArrayList<BorrowDetails>> userBorrowMap;
     
     static public Scanner sc = new Scanner(System.in);
     
     public LibrarySystem(){
+
+        //System.out.println("Looking at: "+ libraryFile.getAbsolutePath());
+        
+        bookList = new ArrayList<>();
+        importBooks();
+        
         userList = new ArrayList<>();
         borrowList = new ArrayList<>();
         userBorrowMap = new HashMap<>();
-        bookList = new ArrayList<>();
+//        
+//        borrow = new BorrowDetails(bookList);
+//        
+//        
+//        Books test = borrow.matchId(1);
+//        System.out.println("Test: " + test.getTitle());
         
-        startupImport();
+        importUsers();
+
         
     }
     
     //IMPORTS =========================================================================================================================================
-    
-    public static void startupImport(){
-        importBooks();
-        importUsers();
-        importBorrowDetails();
-        importLinks();
-    }
+
     //import books
     public static void importBooks(){
         //check if file exists
         File libraryFile = new File("libraryFile.txt");
-        //System.out.println("Looking at: "+ libraryFile.getAbsolutePath());
+        System.out.println("Looking at: "+ libraryFile.getAbsolutePath());
         if(libraryFile.exists()){
             try{
                 BufferedReader reader = new BufferedReader(new FileReader("libraryFile.txt"));
@@ -71,49 +76,108 @@ public class LibrarySystem {
                 }
                 reader.close();
             } catch (IOException e){
+                System.out.println("Error reading from file: " + e.getMessage());
                 e.printStackTrace();
             }
         } else {
             System.out.println("No previous data to import.");
         }
+        System.out.println("Books successfuly loaded!");
     }
     
     //import from file
-    public static void importUsers(){
-        userList.add(new RegularUser("RegUserName","RegPass","Reg", "01234567890"));
-        userList.add(new SpecialUser("StudentUser","StuPass","Student","01234567890","Student"));
-    }
-    
-    public static void importBorrowDetails(){
-//        borrowList.add(new BorrowDetails())
-    }
-    
-    public static void importLinks(){
+    public void importUsers(){
+        File userDatabaseFile = new File("userDataBase.txt");
+        System.out.println("Looking at: "+ userDatabaseFile.getAbsolutePath());
         
+        
+        try (BufferedReader reader = new BufferedReader(new FileReader(userDatabaseFile))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("\\|");
+                String[] bits = parts[0].split(",");
+                //users import
+                String userName = null;
+                if(bits.length != 5){
+                    System.err.println("Invalid user format: "+ line);
+                    continue;
+                }
+                userName = bits[0];
+                String pass = bits[1];
+                String name = bits[2];
+                String num = bits[3];
+                String type = bits[4];
+                //add user
+            
+                addUser(userName, pass, name, num, type);
+                
+
+                //get user to plug into userborrow map
+                Users user = getUser(userName);
+                userBorrowMap.putIfAbsent(user, new ArrayList<>());
+                ArrayList<BorrowDetails> borrowDeets = userBorrowMap.get(user);                
+                
+                //Borrowed books import
+                for(int i = 1; i <parts.length; i++){
+                    String[] bookDetails = parts[i].split(",");
+                    if(bookDetails.length == 3){
+                        try{
+                            int bookId = Integer.parseInt(bookDetails[0]);
+                            LocalDate borrowDate = LocalDate.parse(bookDetails[1]);
+                            LocalDate returnDate = LocalDate.parse(bookDetails[2]);
+                  
+                            //lmao find the book
+                            Books bookImp = null;
+                            for(Books bookz : bookList){
+                                if(bookId == bookz.getId()){
+                                    bookImp = bookz;
+                                }
+                            }
+                            
+                            borrowDeets.add(new BorrowDetails(bookImp, borrowDate, returnDate));
+                        }catch(NumberFormatException e){
+                            System.err.println("Invalid borrow detail format: " + parts[i]);
+                        }catch(NullPointerException e){
+                            System.err.println("Book not found.");
+                        }
+                    }
+//                    else if(!parts[i].isBlank()){
+//                        
+//                    }
+                }
+            }
+            System.out.println("Borrow details loaded successfully from: "+ userDatabaseFile);
+            reader.close();
+        } catch (IOException | NumberFormatException | NullPointerException e) {
+            System.err.println("Error reading from file: " + e.getMessage());
+        }
+        System.out.println("Users successfuly loaded!");
     }
+    
     
     //================================================================================================================================================
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //ADD NEW USERS =================================================================================================================================================
+
     // add users
     public static void addUser(String user, String pass, String name, String num, String type){
-        if(type == "Regular"){
+        if(type.equals("Regular")){
             Users newUser = new RegularUser(user, pass, name, num);
             userList.add(newUser);
             linkUser(newUser);
         }
-        else if (type == "Student" || type == "PWD" || type == "Senior Citizen"){
+        else if (type.equals("Student") || type.equals("PWD")|| type.equals("Senior Citizen")){
             Users newUser = new SpecialUser(user, pass, name, num, type);
             userList.add(newUser);
             linkUser(newUser);
         }
- 
     }
     
     //link NEW user to borrow details
     public static void linkUser(Users user){
         if(!userBorrowMap.containsKey(user)){
             userBorrowMap.put(user, new ArrayList<BorrowDetails>());
+            
         }
     }
     
@@ -130,10 +194,112 @@ public class LibrarySystem {
         return userList;
     }
     
-    //=================================================================================================================================================
+    public Users getUser(String user){
+        for(Users item : userList){
+            if(user.equals(item.getUser()))
+                return item;
+        }
+        return null;
+    }
     
+    public Books matchBookId (int id){
+        for(Books book : bookList){
+            if(id == book.getId()){
+                return book;
+            }
+        }
+        return null;
+    }
+    
+    public BorrowDetails matchBorrowId(Users user, int id){
+        for(BorrowDetails item : getBorrowList(user)){
+                if(id == item.getBorrowID()){
+                    return item;
+                }
+            }
+        return null;
+    }
+    //=====================================================================================================================================================
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //FUNCTIONZXZX SHIT =========================================================================================================================================
+    
+    public void returnBook(Users user, Books book){
+        int id = book.getId();
+        BorrowDetails deets = matchBorrowId(user, id);
+        
+        getBorrowList(user).remove(deets);
+        
+        System.out.println("Book returned!");
+    }
+    
+    public void borrowBook(Users user, Books book){
+        int id = book.getId();
+        int days = 0;
+        String type = user.getUserType();
+        if(type.equals("Regular")){
+            days = 7;
+        }else if(type.equals("Student") || type.equals("PWD")|| type.equals("Senior Citizen")){
+            days = 14;
+        }
+        
+        BorrowDetails deets = new BorrowDetails(book, days);
+        getBorrowList(user).add(deets);
+        System.out.println("Book borrowed! Please return it by " + deets.getReturnDate() + ".");
+    }
+    
+    public void save(){
+        System.out.println("Saving users and books...");
+        saveUsers();
+        saveBooks();
+        System.out.println("Saved!");
+        
+    }
+    
+    //SAVE ===============================================================================================================================================
+    public void saveUsers(){
+        File userDataBaseFile = new File("userDataBase.txt");
+         try (BufferedWriter writer = new BufferedWriter(new FileWriter(userDataBaseFile))) {
+             for(Map.Entry<Users, ArrayList<BorrowDetails>> entry : userBorrowMap.entrySet()){
+                 Users user = entry.getKey();
+                 ArrayList<BorrowDetails> borrowList = entry.getValue();
+                 if(user != null){
+                     //Write user details
+                     writer.write(String.format("%s,%s,%s,%s,%s", user.getUser(),user.getPassword(), user.getName(), user.getNumber()));
+                   
+                     for(BorrowDetails item : borrowList){
+                         writer.write(String.format("|%d,%s,%s", item.getBorrowID(), item.getBorrowDate(), item.getReturnDate()));
+                     }
+                     writer.newLine();
+                 }
+                 
+             }
+            System.out.println("Borrow details saved successfully to " + userDataBaseFile);
+        }catch (IOException e) {
+            System.err.println("Error writing to file: " + e.getMessage());
+        }
+    }
+    
+    public void saveBooks(){
+        File libraryFile = new File("libraryFile.txt");
+         try (BufferedWriter writer = new BufferedWriter(new FileWriter(libraryFile))) {
+             for(Books book : bookList){
+                 if(book != null){
+                     //Write user details
+                     writer.write(String.format("%d,%s,%s,%d,%s", book.getId(), book.getTitle(), book.getAuthor(), book.getQuantity(), book.getType()));
+                     writer.newLine();
+                 }
+                 
+             }
+            System.out.println("Borrow details saved successfully to " + libraryFile);
+        }catch (IOException e) {
+            System.err.println("Error writing to file: " + e.getMessage());
+        }
+    }
+    
+    //====================================================================================================================================================
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //DISPLAYS ===========================================================================================================================================
-    public static void libraryMenu(){
+    public void libraryMenu(Users user){
         while(true){
             System.out.println("+---------------------------------------------------------------------+");
             System.out.println("|                         Available Books                             |");
@@ -156,14 +322,14 @@ public class LibrarySystem {
                 chosenBookObj.displayBook();
                 System.out.printf( "|   Copies available: %3d                                             |\n", (chosenBookObj.getQuantity()));
                 System.out.println("+---------------------------------------------------------------------+");
-                System.out.println("                 [1]  Borrow              [0]  Return");
+                System.out.println("                 [1]  Borrow              [0]  Back");
                 System.out.print(  " Choice: ");
                 int choice = sc.nextInt();
                 sc.nextLine();
                 
                 switch(choice){
                     case 1:
-                            System.out.println("Borrowed (TBA)");
+                            borrowBook(user, chosenBookObj);
                             return;
                     case 0:
                         return;
@@ -229,21 +395,41 @@ public class LibrarySystem {
         System.out.printf( "| User type: %-23s |\n", user.getUserType());
         System.out.println("+------------------------------------+");
 
-
+        return;
+    }
+    
+    public void returnBooks(Users user){
+        System.out.println("==================================== RETURNING BOOKS ======================================");
+        userBorrowedBooks(user);
+        if(getBorrowList(user).isEmpty()){
+            System.out.println("| No books borrowed yet.                                                                      |");
+        }else{
+            System.out.print("Enter the ID of the book you want to return: ");
+            int choice = sc.nextInt();
+        
+            returnBook(user, matchBookId(choice));
+        }
+        
+        
     }
     
     public void userBorrowedBooks(Users user){
-        System.out.println("+---------------------------------------------------------------------------------------+");
-        System.out.println("|                                   Borrowed Books                                      |");
-        System.out.println("+---------------------------------------------------------------------------------------+");
-        System.out.println("|  Title                                 |      Author      | Borrow Date | Return Date |");
-        System.out.println("+---------------------------------------------------------------------------------------+");
-        
+
+        System.out.println("+---------------------------------------------------------------------------------------------+");
+        System.out.println("|                                       Borrowed Books                                        |");
+        System.out.println("+---------------------------------------------------------------------------------------------+");
+        System.out.println("| ID | Title                                   |      Author      | Borrow Date | Return Date |");
+        System.out.println("+---------------------------------------------------------------------------------------------+");
+        if(getBorrowList(user).isEmpty()){
+            System.out.println("| No books borrowed yet.                                                                      |");
+        }
         for(BorrowDetails details : getBorrowList(user)){
             Books book = details.getBorrowedBook();
-            System.out.printf("| %-38s | %-16s | %-11s |", book.getTitle(), book.getAuthor(), details.getBorrowDate(), details.getReturnDate());
+            System.out.printf("| %-2d | %-39s | %-16s | %-11s | %-11s |\n", details.getBorrowID(), book.getTitle(), book.getAuthor(), details.getBorrowDate(), details.getReturnDate());
         }
+        System.out.println("+---------------------------------------------------------------------------------------------+");
         
+        return;
     }
     
     public void displayAllBorrowed(){
@@ -260,5 +446,29 @@ public class LibrarySystem {
                 System.out.printf("| %-30s | %-20s | %-15s | %-11s | %-11s | %-11s |", book.getTitle(), book.getAuthor(), user.getName(), details.getBorrowDate(), details.getReturnDate(), user.getNumber());
             }
         }
+        return;
+    }
+
+    public void donateBook(){
+        System.out.println("+----------------------------------------------+");
+        System.out.println("|       Donate a book to the Library!          |");
+        System.out.println("+----------------------------------------------+");
+        System.out.print(" Book Title: ");
+        String title = sc.nextLine();
+        System.out.print(" Book Author: ");
+        String author = sc.nextLine();
+        System.out.print(" Book Type: [1] E-book [2] Physical Book");
+        int type = sc.nextInt();
+        System.out.print(" How many of these books will you donate? ");
+        int quan = sc.nextInt();
+       
+        if(type == 1){
+            bookList.add(new Ebook(bookList.size()+1,title, author, quan));
+        }else if (type == 2){
+            bookList.add(new PhysicalBook(bookList.size()+1,title, author, quan));
+        }
+        System.out.println("+--------------------------------------------+");
+        System.out.println("| Book donated! Thank you for your kindness! |");
+        System.out.println("+--------------------------------------------+");
     }
 }
