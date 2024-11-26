@@ -1,7 +1,6 @@
 package LibraryManagementSystem;
 
 import java.util.*;
-import java.io.*;
 
 
 /**
@@ -10,10 +9,12 @@ import java.io.*;
  */
 public class LibraryManagementSystem {
     static Scanner sc = new Scanner(System.in);
-    static LibrarySystem lib = new LibrarySystem();
+    static LibrarySystem lib;
+    
     
     
     public static void main(String[] args) {
+        lib = new LibrarySystem();
         
         Login login = new Login(lib);
         
@@ -40,6 +41,8 @@ public class LibraryManagementSystem {
             System.out.println("|              [1] Borrow Book                  |");
             System.out.println("|              [2] Return Book                  |");
             System.out.println("|              [3] User Details                 |");
+            System.out.println("|              [4] View Borrowed Books          |");
+            System.out.println("|              [5] Donate Books                 |");
             System.out.println("|                                               |");
             System.out.println("|              [0] Exit                         |");
             System.out.println("|               --- Group 7 ---                 |");
@@ -50,15 +53,22 @@ public class LibraryManagementSystem {
             
             switch(choice){
                 case 1:
-                    lib.libraryMenu();
+                    lib.libraryMenu(loggedInUser);
                     break;
                 case 2:
-                    
+                    lib.returnBooks(loggedInUser);
                     break;
                 case 3:
                     lib.userDetails(loggedInUser);
                     break;
+                case 4:
+                    lib.userBorrowedBooks(loggedInUser);
+                    break;
+                case 5:
+                    lib.donateBook();
+                    break;
                 case 0:
+                    lib.save();
                     return;
                 default:
                 System.out.println("+----------------------------------+");

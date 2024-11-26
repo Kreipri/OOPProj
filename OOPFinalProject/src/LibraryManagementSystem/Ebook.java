@@ -16,4 +16,8 @@ public class Ebook extends Books{
         this.type = "E-Book";
         
     }
+    
+    public String getType(){
+        return type;
+    }
 }

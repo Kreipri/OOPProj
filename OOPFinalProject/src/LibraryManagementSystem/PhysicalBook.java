@@ -9,11 +9,9 @@ package LibraryManagementSystem;
  * @author ZEN
  */
 public class PhysicalBook extends Books{
-    String type;
     
     public PhysicalBook(int id, String title, String author, int quantity){
         super(id, title, author, quantity);
-        this.type = "Physical Book";
-        
+        setType("PhysicalBook");
     }
 }
