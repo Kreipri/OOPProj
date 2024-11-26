@@ -264,7 +264,7 @@ public class LibrarySystem {
                  ArrayList<BorrowDetails> borrowList = entry.getValue();
                  if(user != null){
                      //Write user details
-                     writer.write(String.format("%s,%s,%s,%s,%s", user.getUser(),user.getPassword(), user.getName(), user.getNumber()));
+                     writer.write(String.format("%s,%s,%s,%s,%s", user.getUser(),user.getPassword(), user.getName(), user.getNumber(), user.getUserType()));
                    
                      for(BorrowDetails item : borrowList){
                          writer.write(String.format("|%d,%s,%s", item.getBorrowID(), item.getBorrowDate(), item.getReturnDate()));
@@ -273,7 +273,7 @@ public class LibrarySystem {
                  }
                  
              }
-            System.out.println("Borrow details saved successfully to " + userDataBaseFile);
+            System.out.println("User details saved successfully to " + userDataBaseFile);
         }catch (IOException e) {
             System.err.println("Error writing to file: " + e.getMessage());
         }
@@ -290,7 +290,7 @@ public class LibrarySystem {
                  }
                  
              }
-            System.out.println("Borrow details saved successfully to " + libraryFile);
+            System.out.println("Book details saved successfully to " + libraryFile);
         }catch (IOException e) {
             System.err.println("Error writing to file: " + e.getMessage());
         }
