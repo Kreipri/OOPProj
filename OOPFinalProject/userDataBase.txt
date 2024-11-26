@@ -1,2 +1,2 @@
-RegUser,RegPass,Reg,01234567890,Regular|1,2024-11-25,2024-12-05|2,2024-10-25,2024-11-15
-StuUser,StuPass,Student,01234567890,Student|
+RegUser,RegPass,Regular,01234567890,Regular|1,2024-10-30,2024-11-05|2,2024-11-27,2024-11-30
+StuUser,StuPass,Student,01234567890,Student
