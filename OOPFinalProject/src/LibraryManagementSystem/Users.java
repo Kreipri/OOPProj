@@ -11,6 +11,7 @@ import java.util.*;
  */
 public abstract class Users extends People{
     private String userType; //Regular or Special
+    private BorrowDetails borrowDetails;
     private List<String> borrowedBooks;
    
     public Users(String username, String password, String name, String cellNo, String userType){
@@ -29,5 +30,4 @@ public abstract class Users extends People{
     public void displayBorrowed(){
         
     }
-    //public abstract void borrowBook(BorrowDetails borrowDetails);
 }
