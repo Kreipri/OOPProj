@@ -97,6 +97,7 @@ public class Login {
         switch(choice){
             case 1:
                 boolean loop = true;
+                boolean subloop = false;
                 while(loop == true){
                     System.out.println("+----------------------------------+");
                     System.out.println("|            User Login            |");
@@ -109,25 +110,29 @@ public class Login {
                         return login.getLoggedInUser();
                     }else{ 
                         System.out.println("+-----------------------------------------------+");
-                        System.out.println("|  Sorry, there is no user with those details.  |\n"
-                                        +  "|       [1] - Try Again   [2] - Sign up         |" );
+                        System.out.println("|  Sorry, there is no user with those details.  |");
                         System.out.println("+-----------------------------------------------+");
+                        do{
+                        subloop = false;    
+                        System.out.println("       [1] - Try Again   [2] - Sign up         ");
                         System.out.print(" Choice: ");
                         choice = enterChoice();
 
                         switch(choice){
                             case 1:
-                                 break;
+                                break;
                             case 2:
-                                signup();
                                 loop = false;
+                                signup();
                                 break;
                             default:
-                                System.out.println("+----------------------------------+");
-                                System.out.println("| Invalid input. Please try again. |");
-                                System.out.println("+----------------------------------+");
+                                System.out.println("+-----------------------------------------------+");
+                                System.out.println("|       Invalid input. Please try again.        |");
+                                System.out.println("+-----------------------------------------------+");
+                                subloop = true;
                                 break;
                             }
+                        }while(subloop);
                     }
                 }
             case 2:
@@ -137,9 +142,9 @@ public class Login {
                 signup();
                 break;
             default:
-                System.out.println("+----------------------------------+");
-                System.out.println("| Invalid input. Please try again. |");
-                System.out.println("+----------------------------------+");
+                System.out.println("+-----------------------------------------------+");
+                System.out.println("|       Invalid input. Please try again.        |");
+                System.out.println("+-----------------------------------------------+");
                 break;
         }
         return null;
@@ -204,7 +209,6 @@ public class Login {
         try{
             choice = sc.nextInt();                
             }catch(Exception e){
-                printErr();
             }
         sc.nextLine();
         return choice;
