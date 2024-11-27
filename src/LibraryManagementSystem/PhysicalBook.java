@@ -8,9 +8,12 @@ package LibraryManagementSystem;
  *
  * @author ZEN
  */
+
+//Inheritance
 public class PhysicalBook extends Books{
-    
+    //Class Costructor
     public PhysicalBook(int id, String title, String author, int quantity){
+        //Calls super class
         super(id, title, author, quantity);
         setType("PhysicalBook");
     }

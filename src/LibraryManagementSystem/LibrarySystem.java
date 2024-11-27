@@ -28,7 +28,7 @@ public class LibrarySystem {
         userBorrowMap = new HashMap<>();
         importUsers();
     }
-    
+     //IMPORTS ================================================================
     //Import books from file
     public static void importBooks(){
         //check if file exists
@@ -133,6 +133,9 @@ public class LibrarySystem {
         System.out.println("Users successfuly loaded!");
     }
     
+    //=========================================================================
+    
+    //ADDING USERS ============================================================
     // add users
     public static void addUser(String user, String pass, String name, String num, String type){
         if(type.equals("Regular")){
@@ -153,7 +156,9 @@ public class LibrarySystem {
             userBorrowMap.put(user, new ArrayList<BorrowDetails>());        
         }
     }
+    //=========================================================================
     
+    //GETTER ==================================================================
     //Get borrow details of all users
     public ArrayList<BorrowDetails> getBorrowList(Users user){
         return userBorrowMap.get(user);
@@ -172,7 +177,7 @@ public class LibrarySystem {
         return null;
     }
     
-    //Check whether ids inputted and stored matches
+    //Check whether ids inputted and stored matches and get
     public Books matchBookId (int id){
         for(Books book : bookList){
             if(id == book.getId()){
@@ -182,7 +187,7 @@ public class LibrarySystem {
         return null;
     }
     
-    //Checks wheter Borrow id matches
+    //Checks wheter Borrow id matches and get
     public BorrowDetails matchBorrowId(Users user, int id){
         for(BorrowDetails item : getBorrowList(user)){
                 if(id == item.getBorrowID()){
@@ -191,7 +196,9 @@ public class LibrarySystem {
             }
         return null;
     }
+    //=========================================================================
     
+    //FEATURES ================================================================
     //Return book and remove from list
     public void returnBook(Users user, Books book){
         int id = book.getId();
@@ -218,6 +225,32 @@ public class LibrarySystem {
         System.out.println("Book borrowed! Please return it by " + deets.getReturnDate() + ".");
     }
     
+    //Book donation
+    public void donateBook(){
+        System.out.println("+----------------------------------------------+");
+        System.out.println("|       Donate a book to the Library!          |");
+        System.out.println("+----------------------------------------------+");
+        System.out.print(" Book Title: ");
+        String title = sc.nextLine();
+        System.out.print(" Book Author: ");
+        String author = sc.nextLine();
+        System.out.print(" Book Type: [1] E-book [2] Physical Book");
+        int type = sc.nextInt();
+        System.out.print(" How many of these books will you donate? ");
+        int quan = sc.nextInt();
+       
+        if(type == 1){
+            bookList.add(new Ebook(bookList.size()+1,title, author, quan));
+        }else if (type == 2){
+            bookList.add(new PhysicalBook(bookList.size()+1,title, author, quan));
+        }
+        System.out.println("+--------------------------------------------+");
+        System.out.println("| Book donated! Thank you for your kindness! |");
+        System.out.println("+--------------------------------------------+");
+    }
+    //=========================================================================
+    
+    //SAVE TO FILE ============================================================
     //Save users and books to file
     public void save(){
         System.out.println("Saving users and books...");
@@ -268,7 +301,9 @@ public class LibrarySystem {
             System.err.println("Error writing to file: " + e.getMessage());
         }
     }
+    //=========================================================================
     
+    //DISPLAY =================================================================
     //Interface
     public void libraryMenu(Users user){
         while(true){
@@ -422,27 +457,5 @@ public class LibrarySystem {
         return;
     }
     
-    //Book donation
-    public void donateBook(){
-        System.out.println("+----------------------------------------------+");
-        System.out.println("|       Donate a book to the Library!          |");
-        System.out.println("+----------------------------------------------+");
-        System.out.print(" Book Title: ");
-        String title = sc.nextLine();
-        System.out.print(" Book Author: ");
-        String author = sc.nextLine();
-        System.out.print(" Book Type: [1] E-book [2] Physical Book");
-        int type = sc.nextInt();
-        System.out.print(" How many of these books will you donate? ");
-        int quan = sc.nextInt();
-       
-        if(type == 1){
-            bookList.add(new Ebook(bookList.size()+1,title, author, quan));
-        }else if (type == 2){
-            bookList.add(new PhysicalBook(bookList.size()+1,title, author, quan));
-        }
-        System.out.println("+--------------------------------------------+");
-        System.out.println("| Book donated! Thank you for your kindness! |");
-        System.out.println("+--------------------------------------------+");
-    }
+    //=========================================================================
 }

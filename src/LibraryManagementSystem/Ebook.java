@@ -11,16 +11,10 @@ package LibraryManagementSystem;
 
 //Inheritance
 public class Ebook extends Books{
-    String type;
-    
     //Class Costructor
     public Ebook(int id, String title, String author, int quantity){
         //Calls super class
         super(id, title, author, quantity);
-        this.type = "E-Book";
-    }
-    
-    public String getType(){
-        return type;
+        setType("E-Book");
     }
 }

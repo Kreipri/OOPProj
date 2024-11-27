@@ -18,7 +18,7 @@ public class LibraryManagementSystem {
         Users loggedInUser = null;
         
         while(loggedInUser == null){
-            loggedInUser = Login.login(login);
+            loggedInUser = Login.login(login, lib);
         }
 
         

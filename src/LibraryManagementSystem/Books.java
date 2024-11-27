@@ -22,7 +22,7 @@ public class  Books {
         this.type = "Book";
     }
     
-    //Setters and Getters
+    //GETTERS ================================================================
     public String getTitle(){
         return title;
     }
@@ -38,7 +38,9 @@ public class  Books {
     public int getQuantity(){
         return quantity;
     }
+    //========================================================================
     
+    //SETTERS ================================================================
     public void setType(String type){
         this.type = type;
     }
@@ -51,5 +53,6 @@ public class  Books {
     public void displayBook(){
     //System.out.println("| ID | Title                                    |        Author       |");
     System.out.printf( "| %-2d | %-40s | %-19s |\n", id, title, author);
-}
+    }
+    //========================================================================
 }

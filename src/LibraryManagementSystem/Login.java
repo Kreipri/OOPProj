@@ -36,24 +36,24 @@ public class Login {
     }
     
     //Create New User
-    public static boolean signup(String username, String password, String name, String cellNo, String userType){
-        if(!checkUniqueUser(username)){
-            System.out.println("+-----------------------------------+");
-            System.out.println("| Username taken. Please try again. |");
-            System.out.println("+-----------------------------------+");
-        }
-        
-        //Creation of new user depending on user type
-        if(userType.equals("Regular")){
-           users.add(new RegularUser(username, password, name, cellNo));
-        }else if (userType.equals("Student")|| userType.equals("PWD") || userType.equals("Senior Citizen")){
-            users.add(new SpecialUser(username, password, name, cellNo, userType));
-        }
-        System.out.println("+-----------------------------------------+");
-        System.out.println("| Sign-up successful! You can now log in. |");
-        System.out.println("+-----------------------------------------+");
-        return true;
-    }
+//    public static boolean signup(String username, String password, String name, String cellNo, String userType){
+//        if(!checkUniqueUser(username)){
+//            System.out.println("+-----------------------------------+");
+//            System.out.println("| Username taken. Please try again. |");
+//            System.out.println("+-----------------------------------+");
+//        }
+//        
+//        //Creation of new user depending on user type
+//        if(userType.equals("Regular")){
+//           users.add(new RegularUser(username, password, name, cellNo));
+//        }else if (userType.equals("Student")|| userType.equals("PWD") || userType.equals("Senior Citizen")){
+//            users.add(new SpecialUser(username, password, name, cellNo, userType));
+//        }
+//        System.out.println("+-----------------------------------------+");
+//        System.out.println("| Sign-up successful! You can now log in. |");
+//        System.out.println("+-----------------------------------------+");
+//        return true;
+//    }
     
     //Checks if the username is already taken
     public static boolean checkUniqueUser(String username){
@@ -73,8 +73,9 @@ public class Login {
         return loggedInUser;
     }
     
+    //DISPLAY ===============================================================
     //actual log-in system
-    public static Users login(Login login){
+    public static Users login(Login login, LibrarySystem lib){
         
        System.out.println( "         __...--~~~~~-._   _.-~~~~~--...__\n" +
                             "      //               `V'               \\\\ \n" +
@@ -123,7 +124,7 @@ public class Login {
                                 break;
                             case 2:
                                 loop = false;
-                                signup();
+                                signup(lib);
                                 break;
                             default:
                                 System.out.println("+-----------------------------------------------+");
@@ -139,7 +140,7 @@ public class Login {
                 System.out.println("TBA");
                 break;
             case 3:
-                signup();
+                signup(lib);
                 break;
             default:
                 System.out.println("+-----------------------------------------------+");
@@ -150,9 +151,10 @@ public class Login {
         return null;
     }
     
-    //user input of details
-    public static boolean signup(){
-        
+    //user signup input of details
+    public static boolean signup(LibrarySystem lib){
+        boolean loop = true;
+        do{
         System.out.println("+-------------------------------------+");
         System.out.println("|             User Sign-up             |");
         System.out.println("+-------------------------------------+");
@@ -167,8 +169,8 @@ public class Login {
         String cell = sc.nextLine();
         String userType = null;
 
-        boolean loop = true;
-        while(loop){
+        boolean subloop = true;
+        do{
             System.out.print(  " Are you a: ");
             System.out.print("    \n[1] Student"
                              + "    \n[2] Person with Disability "
@@ -180,30 +182,32 @@ public class Login {
             switch(choice){
                 case 1: 
                     userType = "Student";
-                    loop = false;
                     break;
                 case 2: 
                     userType = "PWD";
-                    loop = false;
                     break;
                 case 3:
                     userType = "Senior Citizen";
-                    loop = false;
                     break;
                 case 4:
                     userType = "Regular";
-                    loop = false;
                     break;
                 default:
+                    loop = true;
                     printErr();
                     break;
             }
-        }
-        signup(user, pass, name, cell, userType); 
+        }while(subloop);
+        lib.addUser(user,pass,name,cell,userType); 
+        loop = false;
+        }while(loop);
+        
         return true;
     }
     
-    //exception handling/ error trapping
+    
+    
+    //exception handling/error trapping for choices
     public static int enterChoice(){
         int choice = 9;
         try{
