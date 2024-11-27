@@ -35,46 +35,52 @@ public class LibraryManagementSystem {
             System.out.println("+-----------------------------------------------+");
             System.out.println("|   Welcome to the Library Management System!   |");
             System.out.println("+-----------------------------------------------+");
-            System.out.println("|              [1] Borrow Book                  |");
-            System.out.println("|              [2] Return Book                  |");
-            System.out.println("|              [3] User Details                 |");
-            System.out.println("|              [4] View Borrowed Books          |");
-            System.out.println("|              [5] Donate Books                 |");
+            System.out.println("|              [1] View Books                   |");
+            System.out.println("|              [2] Borrow Book                  |");
+            System.out.println("|              [3] Return Book                  |");
+            System.out.println("|              [4] User Details                 |");
+            System.out.println("|              [5] View Borrowed Books          |");
+            System.out.println("|              [6] Donate Books                 |");
             System.out.println("|                                               |");
             System.out.println("|              [0] Exit                         |");
             System.out.println("|               --- Group 7 ---                 |");
             System.out.println("+-----------------------------------------------+");
             System.out.print("  Choice: ");
-            int choice = sc.nextInt();
+            int choice = 9;
+            try{
+                choice = sc.nextInt();
+            }catch(Exception e){
+            }
             sc.nextLine();
             
             switch(choice){
                 case 1:
-                    lib.libraryMenu(loggedInUser);
+                    lib.displayAllBooks();
                     break;
                 case 2:
-                    lib.returnBooks(loggedInUser);
+                    lib.libraryMenu(loggedInUser);
                     break;
                 case 3:
-                    lib.userDetails(loggedInUser);
+                    lib.returnBooks(loggedInUser);
                     break;
                 case 4:
-                    lib.userBorrowedBooks(loggedInUser);
+                    lib.userDetails(loggedInUser);
                     break;
                 case 5:
+                    lib.userBorrowedBooks(loggedInUser);
+                    break;
+                case 6:
                     lib.donateBook();
                     break;
                 case 0:
                     lib.save();
                     return;
                 default:
-                System.out.println("+----------------------------------+");
-                System.out.println("| Invalid input. Please try again. |");
-                System.out.println("+----------------------------------+");
-                        
+                System.out.println("+-----------------------------------------------+");
+                System.out.println("|        Invalid input. Please try again.       |");
+                System.out.println("+-----------------------------------------------+"); 
+                break;
             }
-            
-            
         }
         
         

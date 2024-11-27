@@ -49,6 +49,19 @@ public class  Books {
         return type;
     }
     
+    public void setQuantity(int quantity){
+        this.quantity = quantity;
+        return;
+    }
+    
+    public void borrowBook(){
+        this.quantity--;
+    }
+    
+    public void returnBook(){
+        this.quantity++;
+    }
+    
     //Display Book
     public void displayBook(){
     //System.out.println("| ID | Title                                    |        Author       |");

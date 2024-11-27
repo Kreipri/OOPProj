@@ -45,11 +45,11 @@ public class People{
     
     //username verifier
     public boolean checkUser(String user){
-        return user.equalsIgnoreCase(username);
+        return username.equals(user);
     }
     //password verifier
     public boolean checkPassword(String pass){
-        return password.equals(password);
+        return password.equals(pass);
     }
 }
 

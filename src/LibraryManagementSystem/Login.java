@@ -35,26 +35,6 @@ public class Login {
         return false;
     }
     
-    //Create New User
-//    public static boolean signup(String username, String password, String name, String cellNo, String userType){
-//        if(!checkUniqueUser(username)){
-//            System.out.println("+-----------------------------------+");
-//            System.out.println("| Username taken. Please try again. |");
-//            System.out.println("+-----------------------------------+");
-//        }
-//        
-//        //Creation of new user depending on user type
-//        if(userType.equals("Regular")){
-//           users.add(new RegularUser(username, password, name, cellNo));
-//        }else if (userType.equals("Student")|| userType.equals("PWD") || userType.equals("Senior Citizen")){
-//            users.add(new SpecialUser(username, password, name, cellNo, userType));
-//        }
-//        System.out.println("+-----------------------------------------+");
-//        System.out.println("| Sign-up successful! You can now log in. |");
-//        System.out.println("+-----------------------------------------+");
-//        return true;
-//    }
-    
     //Checks if the username is already taken
     public static boolean checkUniqueUser(String username){
             for(Users user: users){
@@ -71,6 +51,24 @@ public class Login {
     //getter
     public Users getLoggedInUser(){
         return loggedInUser;
+    }
+    
+     //exception handling/error trapping for choices
+    public static int enterChoice(){
+        int choice = 9;
+        try{
+            choice = sc.nextInt();                
+            }catch(Exception e){
+            }
+        sc.nextLine();
+        return choice;
+    }
+    
+    //error message
+    public static void printErr(){
+        System.out.println("+-----------------------------------------------+");
+        System.out.println("|       Invalid input. Please try again.        |");
+        System.out.println("+-----------------------------------------------+");
     }
     
     //DISPLAY ===============================================================
@@ -204,24 +202,5 @@ public class Login {
         
         return true;
     }
-    
-    
-    
-    //exception handling/error trapping for choices
-    public static int enterChoice(){
-        int choice = 9;
-        try{
-            choice = sc.nextInt();                
-            }catch(Exception e){
-            }
-        sc.nextLine();
-        return choice;
-    }
-    
-    //error message
-    public static void printErr(){
-        System.out.println("+----------------------------------+");
-        System.out.println("| Invalid input. Please try again. |");
-        System.out.println("+----------------------------------+");
-    }
+   
 }

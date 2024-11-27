@@ -206,7 +206,10 @@ public class LibrarySystem {
         
         getBorrowList(user).remove(deets);
         
-        System.out.println("Book returned!");
+        book.returnBook();
+        System.out.println("+----------------+");
+        System.out.println("| Book returned! |");
+        System.out.println("+----------------+");
     }
     
     //Borrow book function
@@ -222,32 +225,13 @@ public class LibrarySystem {
         
         BorrowDetails deets = new BorrowDetails(book, days);
         getBorrowList(user).add(deets);
-        System.out.println("Book borrowed! Please return it by " + deets.getReturnDate() + ".");
+        book.borrowBook();
+        
+        System.out.println("+------------------------------------------------+");
+        System.out.println("| Book borrowed! Please return it by " + deets.getReturnDate() + ". |");
+        System.out.println("+------------------------------------------------+");
     }
     
-    //Book donation
-    public void donateBook(){
-        System.out.println("+----------------------------------------------+");
-        System.out.println("|       Donate a book to the Library!          |");
-        System.out.println("+----------------------------------------------+");
-        System.out.print(" Book Title: ");
-        String title = sc.nextLine();
-        System.out.print(" Book Author: ");
-        String author = sc.nextLine();
-        System.out.print(" Book Type: [1] E-book [2] Physical Book");
-        int type = sc.nextInt();
-        System.out.print(" How many of these books will you donate? ");
-        int quan = sc.nextInt();
-       
-        if(type == 1){
-            bookList.add(new Ebook(bookList.size()+1,title, author, quan));
-        }else if (type == 2){
-            bookList.add(new PhysicalBook(bookList.size()+1,title, author, quan));
-        }
-        System.out.println("+--------------------------------------------+");
-        System.out.println("| Book donated! Thank you for your kindness! |");
-        System.out.println("+--------------------------------------------+");
-    }
     //=========================================================================
     
     //SAVE TO FILE ============================================================
@@ -307,46 +291,50 @@ public class LibrarySystem {
     //Interface
     public void libraryMenu(Users user){
         while(true){
-            System.out.println("+---------------------------------------------------------------------+");
-            System.out.println("|                         Available Books                             |");
-            System.out.println("+---------------------------------------------------------------------+");
-            System.out.println("| ID | Title                                    |        Author       |");
-            if(bookList != null){
-                 displayBooks();
-            }else{
-                System.out.println("No books available. Please contact your librarian.");   
-            }
-           
-            System.out.println("+---------------------------------------------------------------------+");
-            System.out.println(" Type the ID, Title or Author of the book you want to select: ");
+            displayAllBooks();
+            System.out.println(" Type the ID, Title or Author of the book you want to select [INPUT 0 OR X TO GO BACK]: ");
             String chosenBook = sc.nextLine();
+            if (chosenBook.equals("0") || chosenBook.equals("X")){
+                return;
+            }
 
             Books chosenBookObj = searchForBook(chosenBook,sc);
             if(chosenBookObj != null){
-                System.out.println("+---------------------------------------------------------------------+");
-                System.out.println("| ID | Title                                    |        Author       |");
-                chosenBookObj.displayBook();
-                System.out.printf( "|   Copies available: %3d                                             |\n", (chosenBookObj.getQuantity()));
-                System.out.println("+---------------------------------------------------------------------+");
-                System.out.println("                 [1]  Borrow              [0]  Back");
-                System.out.print(  " Choice: ");
-                int choice = sc.nextInt();
-                sc.nextLine();
-                
-                switch(choice){
-                    case 1:
-                            borrowBook(user, chosenBookObj);
+                if(chosenBookObj.getQuantity() != 0){
+                    System.out.println("+---------------------------------------------------------------------+");
+                    System.out.println("| ID | Title                                    |        Author       |");
+                    chosenBookObj.displayBook();
+                    System.out.printf( "|   Copies available: %3d                                             |\n", (chosenBookObj.getQuantity()));
+                    System.out.println("+---------------------------------------------------------------------+");
+                    System.out.println("                 [1]  Borrow              [0]  Back");
+                    System.out.print(  " Choice: ");
+                    int choice = sc.nextInt();
+                    sc.nextLine();
+
+                    switch(choice){
+                        case 1:
+                                borrowBook(user, chosenBookObj);
+                                return;
+                        case 0:
                             return;
-                    case 0:
-                        return;
-                    default:
-                        System.out.println("+----------------------------------+");
-                        System.out.println("| Invalid input. Please try again. |");
-                        System.out.println("+----------------------------------+");
+                        default:
+                            System.out.println("+----------------------------------+");
+                            System.out.println("| Invalid input. Please try again. |");
+                            System.out.println("+----------------------------------+");
+                    }
+                }else{
+                    System.out.println("+---------------------------------------------------------------------+");
+                    System.out.println("| ID | Title                                    |        Author       |");
+                    chosenBookObj.displayBook();
+                    System.out.println("|   No copies left to borrow.                                         |");
+                    System.out.println("+---------------------------------------------------------------------+");
                 }
+                
             }
             else{
-                System.out.println("Book not found!");
+                System.out.println("+-----------------------------------------------+");
+                System.out.println("|        No books with those details.           |");
+                System.out.println("+-----------------------------------------------+");
                 return;
             }
         }
@@ -360,30 +348,38 @@ public class LibrarySystem {
             if(item.getTitle().toLowerCase().contains(query.toLowerCase())||item.getAuthor().toLowerCase().contains(query.toLowerCase())||(Integer.toString(item.getId())).equals(query)){
                 caughtItems.add(bookList.indexOf(item));
                 caught++; 
+            }else{
+                return null;
             }
         }
         if (caught > 1){
-            System.out.println("+---------------------------------------------------------------------+");
-            System.out.printf( "|                Searched matched with %d books                       |\n", caught);
-            System.out.println("+---------------------------------------------------------------------+");
-            System.out.println("| ID | Title                                    |        Author       |");
-            for(int number : caughtItems){
-                bookList.get(number).displayBook();
-            }
-            System.out.println("+---------------------------------------------------------------------+");
-            System.out.println(" Type the ID of the book you want to select: ");
-            int chosenIndex = sc.nextInt()-1;
-            
-            return bookList.get(chosenIndex);
-            
-            
+            boolean loop;
+            do{
+                loop = false;
+                System.out.println("+---------------------------------------------------------------------+");
+                System.out.printf( "|                Searched matched with %d books                       |\n", caught);
+                System.out.println("+---------------------------------------------------------------------+");
+                System.out.println("| ID | Title                                    |        Author       |");
+                for(int number : caughtItems){
+                    bookList.get(number).displayBook();
+                }
+                System.out.println("+---------------------------------------------------------------------+");
+                System.out.println(" Type the ID of the book you want to select: ");
+                int chosenIndex = sc.nextInt()-1;
+                if(chosenIndex < 0 || chosenIndex >= bookList.size()){
+                    loop = true;
+                    System.out.println("+-----------------------------------------------+");
+                    System.out.println("|        Invalid ID. Please try again.          |");
+                    System.out.println("+-----------------------------------------------+");
+                    continue;
+                }
+                return bookList.get(chosenIndex);
+            }while(loop);
+
         }else if (caught == 1){
             return bookList.get(caughtItems.get(0));
         }
-        else{
-            return null;
-        }
-        
+        return null;
     }
     
     //Display all books
@@ -408,15 +404,28 @@ public class LibrarySystem {
     
     //Actual book return process
     public void returnBooks(Users user){
+        boolean loop = false;
+        do{
         System.out.println("==================================== RETURNING BOOKS ======================================");
         userBorrowedBooks(user);
         if(getBorrowList(user).isEmpty()){
             System.out.println("| No books borrowed yet.                                                                      |");
         }else{
-            System.out.print("Enter the ID of the book you want to return: ");
-            int choice = sc.nextInt();    
-            returnBook(user, matchBookId(choice));
+            System.out.print("Enter the ID of the book you want to return [INPUT 0 TO GO BACK]: ");
+            int choice = sc.nextInt();
+            if (choice == 0){
+                return;
+            }
+            Books returningBook = matchBookId(choice);
+            if( returningBook == null){
+                System.out.println("Book does not exist. Please try again.");
+                loop = true;
+                break;
+            }
+            returnBook(user,returningBook);
         } 
+        }while(loop);
+        
     }
     
     //Displays borrowed books by a user
@@ -455,6 +464,72 @@ public class LibrarySystem {
             }
         }
         return;
+    }
+    
+    public void displayAllBooks(){
+        System.out.println("+---------------------------------------------------------------------+");
+        System.out.println("|                             Books                                   |");
+        System.out.println("+---------------------------------------------------------------------+");
+        System.out.println("| ID | Title                                    |        Author       |");
+        if(bookList != null){
+             displayBooks();
+        }else{
+            System.out.println("No books available. Please contact your librarian.");   
+        }
+        System.out.println("+---------------------------------------------------------------------+");
+    }
+    
+    //Book donation
+    public void donateBook(){
+        
+        boolean loop = false;
+        do{
+        System.out.println("+----------------------------------------------+");
+        System.out.println("|       Donate a book to the Library!          |");
+        System.out.println("+----------------------------------------------+");
+        try{
+            System.out.println("[INPUT 0 OR X TO GO BACK]");
+            System.out.print(" Book Title: ");
+            String title = sc.nextLine();
+            if(title.equals("0")||title.equals("X"))return;
+            System.out.print(" Book Author: ");
+            String author = sc.nextLine();
+            if(author.equals("0")||author.equals("X"))return;
+            System.out.println(" Book Type: [1] E-book [2] Physical Book");
+            System.out.print("  Choice: ");
+            int type = sc.nextInt();
+            if(type == 0){
+                sc.nextLine();
+                return;
+            }else if(type > 2)throw new IllegalArgumentException();
+            
+            System.out.print(" How many of these books will you donate? ");
+            int quan = sc.nextInt();
+            sc.nextLine();
+
+            if(type == 1){
+                bookList.add(new Ebook(bookList.size()+1,title, author, quan));
+            }else if (type == 2){
+                bookList.add(new PhysicalBook(bookList.size()+1,title, author, quan));
+            }
+            System.out.println("+--------------------------------------------+");
+            System.out.println("| Book donated! Thank you for your kindness! |");
+            System.out.println("+--------------------------------------------+");
+
+        }catch(IllegalArgumentException i){
+            System.out.println("+--------------------------------------------+\n" +
+                               "|    Choose between the numbers specified.   |\n" +
+                               "+--------------------------------------------+\n");
+            loop = true;
+        }catch(Exception e){
+        sc.nextLine();
+        System.out.println("+----------------------------------------------+");
+        System.out.println("|       Invalid input. Please try again.       |");
+        System.out.println("+----------------------------------------------+");
+        loop = true;
+        }
+        
+        }while(loop);
     }
     
     //=========================================================================
