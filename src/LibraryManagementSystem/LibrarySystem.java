@@ -331,7 +331,7 @@ public class LibrarySystem {
                 }
                 
             }
-            else{
+            else if(chosenBookObj == null){
                 System.out.println("+-----------------------------------------------+");
                 System.out.println("|        No books with those details.           |");
                 System.out.println("+-----------------------------------------------+");
@@ -348,8 +348,6 @@ public class LibrarySystem {
             if(item.getTitle().toLowerCase().contains(query.toLowerCase())||item.getAuthor().toLowerCase().contains(query.toLowerCase())||(Integer.toString(item.getId())).equals(query)){
                 caughtItems.add(bookList.indexOf(item));
                 caught++; 
-            }else{
-                return null;
             }
         }
         if (caught > 1){
@@ -366,6 +364,7 @@ public class LibrarySystem {
                 System.out.println("+---------------------------------------------------------------------+");
                 System.out.println(" Type the ID of the book you want to select: ");
                 int chosenIndex = sc.nextInt()-1;
+                sc.nextLine();
                 if(chosenIndex < 0 || chosenIndex >= bookList.size()){
                     loop = true;
                     System.out.println("+-----------------------------------------------+");

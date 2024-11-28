@@ -85,9 +85,9 @@ public class Login {
         System.out.println("+-----------------------------------------------+");
         System.out.println("|   Welcome to the Library Management System!   |");
         System.out.println("+-----------------------------------------------+");
-        System.out.println("|   [1] Login as User      [2] Login as Staff   |");
-        System.out.println("|                 [3] Sign Up                   |");
-        System.out.println("|              --- Group 7 ---                  |");
+        System.out.println("|   [1] Login as User      [2] Sign Up          |");
+        System.out.println("|                                               |");
+        System.out.println("|               --- Group 7 ---                 |");
         System.out.println("+-----------------------------------------------+");
         System.out.print("  Choice: ");
         
@@ -135,9 +135,6 @@ public class Login {
                     }
                 }
             case 2:
-                System.out.println("TBA");
-                break;
-            case 3:
                 signup(lib);
                 break;
             default:
@@ -153,51 +150,55 @@ public class Login {
     public static boolean signup(LibrarySystem lib){
         boolean loop = true;
         do{
-        System.out.println("+-------------------------------------+");
-        System.out.println("|             User Sign-up             |");
-        System.out.println("+-------------------------------------+");
-        System.out.print(  " Enter Username: ");
-        String user = sc.nextLine();
-        Login.checkUniqueUser(user);
-        System.out.print(  " Enter Password: ");
-        String pass = sc.nextLine();
-        System.out.print(" Enter Name: ");
-        String name = sc.nextLine();
-        System.out.print(" Enter Contact Number: ");
-        String cell = sc.nextLine();
-        String userType = null;
+            System.out.println("+-------------------------------------+");
+            System.out.println("|             User Sign-up            |");
+            System.out.println("+-------------------------------------+");
+            System.out.print(  " Enter Username: ");
+            String user = sc.nextLine();
+            Login.checkUniqueUser(user);
+            System.out.print(  " Enter Password: ");
+            String pass = sc.nextLine();
+            System.out.print(" Enter Name: ");
+            String name = sc.nextLine();
+            System.out.print(" Enter Contact Number: ");
+            String cell = sc.nextLine();
+            String userType = null;
 
-        boolean subloop = true;
-        do{
-            System.out.print(  " Are you a: ");
-            System.out.print("    \n[1] Student"
-                             + "    \n[2] Person with Disability "
-                             + "    \n[3] Senior Citizen"
-                             + "    \n[4] None of the above"
-                             + "  \nChoice: ");
-            int choice = enterChoice();
-            
-            switch(choice){
-                case 1: 
-                    userType = "Student";
-                    break;
-                case 2: 
-                    userType = "PWD";
-                    break;
-                case 3:
-                    userType = "Senior Citizen";
-                    break;
-                case 4:
-                    userType = "Regular";
-                    break;
-                default:
-                    loop = true;
-                    printErr();
-                    break;
-            }
-        }while(subloop);
-        lib.addUser(user,pass,name,cell,userType); 
-        loop = false;
+            boolean subloop;
+            do{
+                subloop = false;
+                System.out.print(  " Are you a: ");
+                System.out.print("    \n[1] Student"
+                                 + "    \n[2] Person with Disability "
+                                 + "    \n[3] Senior Citizen"
+                                 + "    \n[4] None of the above"
+                                 + "  \nChoice: ");
+                int choice = enterChoice();
+
+                switch(choice){
+                    case 1: 
+                        userType = "Student";
+                        break;
+                    case 2: 
+                        userType = "PWD";
+                        break;
+                    case 3:
+                        userType = "Senior Citizen";
+                        break;
+                    case 4:
+                        userType = "Regular";
+                        break;
+                    default:
+                        loop = true;
+                        printErr();
+                        break;
+                }
+            }while(subloop);
+            lib.addUser(user,pass,name,cell,userType); 
+            System.out.println("+---------------------------------------------+");
+            System.out.println("|   Sign-up Successful! You can now Log in!   |");
+            System.out.println("+---------------------------------------------+");
+            loop = false;
         }while(loop);
         
         return true;
