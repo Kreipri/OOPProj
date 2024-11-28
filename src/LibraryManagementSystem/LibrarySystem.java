@@ -301,11 +301,11 @@ public class LibrarySystem {
             Books chosenBookObj = searchForBook(chosenBook,sc);
             if(chosenBookObj != null){
                 if(chosenBookObj.getQuantity() != 0){
-                    System.out.println("+---------------------------------------------------------------------+");
-                    System.out.println("| ID | Title                                    |        Author       |");
+                    System.out.println("+-------------------------------------------------------------------------------------+");
+                    System.out.println("| ID | Title                                    |        Author       |      Type     |");
                     chosenBookObj.displayBook();
-                    System.out.printf( "|   Copies available: %3d                                             |\n", (chosenBookObj.getQuantity()));
-                    System.out.println("+---------------------------------------------------------------------+");
+                    System.out.printf( "|   Copies available: %3d                                                             |\n", (chosenBookObj.getQuantity()));
+                    System.out.println("+-------------------------------------------------------------------------------------+");
                     System.out.println("                 [1]  Borrow              [0]  Back");
                     System.out.print(  " Choice: ");
                     int choice = sc.nextInt();
@@ -323,11 +323,11 @@ public class LibrarySystem {
                             System.out.println("+----------------------------------+");
                     }
                 }else{
-                    System.out.println("+---------------------------------------------------------------------+");
-                    System.out.println("| ID | Title                                    |        Author       |");
+                    System.out.println("+-------------------------------------------------------------------------------------+");
+                    System.out.println("| ID | Title                                    |        Author       |      Type     |");
                     chosenBookObj.displayBook();
-                    System.out.println("|   No copies left to borrow.                                         |");
-                    System.out.println("+---------------------------------------------------------------------+");
+                    System.out.println("|   No copies left to borrow.                                                         |");
+                    System.out.println("+-------------------------------------------------------------------------------------+");
                 }
                 
             }
@@ -354,14 +354,14 @@ public class LibrarySystem {
             boolean loop;
             do{
                 loop = false;
-                System.out.println("+---------------------------------------------------------------------+");
-                System.out.printf( "|                Searched matched with %d books                       |\n", caught);
-                System.out.println("+---------------------------------------------------------------------+");
-                System.out.println("| ID | Title                                    |        Author       |");
+                System.out.println("+-------------------------------------------------------------------------------------+");
+                System.out.printf( "|                          Searched matched with %d books                             |\n", caught);
+                System.out.println("+-------------------------------------------------------------------------------------+");
+                System.out.println("| ID | Title                                    |        Author       |      Type     |");
                 for(int number : caughtItems){
                     bookList.get(number).displayBook();
                 }
-                System.out.println("+---------------------------------------------------------------------+");
+                System.out.println("+-------------------------------------------------------------------------------------+");
                 System.out.println(" Type the ID of the book you want to select: ");
                 int chosenIndex = sc.nextInt()-1;
                 sc.nextLine();
@@ -430,24 +430,24 @@ public class LibrarySystem {
     //Displays borrowed books by a user
     public void userBorrowedBooks(Users user){
 
-        System.out.println("+---------------------------------------------------------------------------------------------+");
-        System.out.println("|                                       Borrowed Books                                        |");
-        System.out.println("+---------------------------------------------------------------------------------------------+");
-        System.out.println("| ID | Title                                   |      Author      | Borrow Date | Return Date |");
-        System.out.println("+---------------------------------------------------------------------------------------------+");
+        System.out.println("+-------------------------------------------------------------------------------------------------------------+");
+        System.out.println("|                                              Borrowed Books                                                 |");
+        System.out.println("+-------------------------------------------------------------------------------------------------------------+");
+        System.out.println("| ID | Title                                   |      Author      |      Type     | Borrow Date | Return Date |");
+        System.out.println("+-------------------------------------------------------------------------------------------------------------+");
         if(getBorrowList(user).isEmpty()){
             System.out.println("| No books borrowed yet.                                                                      |");
         }
         for(BorrowDetails details : getBorrowList(user)){
             Books book = details.getBorrowedBook();
-            System.out.printf("| %-2d | %-39s | %-16s | %-11s | %-11s |\n", details.getBorrowID(), book.getTitle(), book.getAuthor(), details.getBorrowDate(), details.getReturnDate());
+            System.out.printf("| %-2d | %-39s | %-16s | %-13s | %-11s | %-11s |\n", details.getBorrowID(), book.getTitle(), book.getAuthor(), book.getType(), details.getBorrowDate(), details.getReturnDate());
         }
         System.out.println("+---------------------------------------------------------------------------------------------+");
         
         return;
     }
     
-    //Displays all borrowed books by all users
+    //Displays all borrowed books by all users [X]
     public void displayAllBorrowed(){
         System.out.println(   "+-------------------------------------------------------------------------------------------------------------------+");
         System.out.println(   "|                                             All Borrowed Books                                                    |");
@@ -466,16 +466,16 @@ public class LibrarySystem {
     }
     
     public void displayAllBooks(){
-        System.out.println("+---------------------------------------------------------------------+");
-        System.out.println("|                             Books                                   |");
-        System.out.println("+---------------------------------------------------------------------+");
-        System.out.println("| ID | Title                                    |        Author       |");
+        System.out.println("+-------------------------------------------------------------------------------------+");
+        System.out.println("|                                     Books                                           |");
+        System.out.println("+-------------------------------------------------------------------------------------+");
+        System.out.println("| ID | Title                                    |        Author       |      Type     |");
         if(bookList != null){
              displayBooks();
         }else{
             System.out.println("No books available. Please contact your librarian.");   
         }
-        System.out.println("+---------------------------------------------------------------------+");
+        System.out.println("+-------------------------------------------------------------------------------------+");
     }
     
     //Book donation

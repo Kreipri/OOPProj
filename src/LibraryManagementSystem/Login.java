@@ -155,7 +155,9 @@ public class Login {
             System.out.println("+-------------------------------------+");
             System.out.print(  " Enter Username: ");
             String user = sc.nextLine();
-            Login.checkUniqueUser(user);
+            if(!checkUniqueUser(user)){
+                continue;
+            }
             System.out.print(  " Enter Password: ");
             String pass = sc.nextLine();
             System.out.print(" Enter Name: ");
@@ -189,7 +191,7 @@ public class Login {
                         userType = "Regular";
                         break;
                     default:
-                        loop = true;
+                        subloop = true;
                         printErr();
                         break;
                 }

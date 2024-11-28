@@ -64,8 +64,8 @@ public class  Books {
     
     //Display Book
     public void displayBook(){
-    //System.out.println("| ID | Title                                    |        Author       |");
-    System.out.printf( "| %-2d | %-40s | %-19s |\n", id, title, author);
+    //System.out.println("| ID | Title                                    |        Author       |      Type     |");
+    System.out.printf( "| %-2d | %-40s | %-19s | %-13s |\n", id, title, author, type);
     }
     //========================================================================
 }

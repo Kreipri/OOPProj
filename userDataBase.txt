@@ -1,3 +1,3 @@
+User,Pass,user,01234567890,Student|3,2024-11-28,2024-12-12
 StuUser,StuPass,Student,01234567890,Student
-User,Pass,user,01234567890,Student
 RegUser,RegPass,Regular,01234567890,Regular|1,2024-10-30,2024-11-05|2,2024-11-27,2024-11-30
