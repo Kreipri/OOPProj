@@ -15,11 +15,11 @@ public class LibrarySystem {
     static private ArrayList<BorrowDetails> borrowList;
     static private ArrayList<Books> bookList;
     
-    
+    //Hashmap
     static private Map<Users, ArrayList<BorrowDetails>> userBorrowMap;
-    
     static public Scanner sc = new Scanner(System.in);
     
+    //Class Constructor
     public LibrarySystem(){
         bookList = new ArrayList<>();
         importBooks();
@@ -28,7 +28,7 @@ public class LibrarySystem {
         userBorrowMap = new HashMap<>();
         importUsers();
     }
-     //IMPORTS ================================================================
+     
     //Import books from file
     public static void importBooks(){
         //check if file exists
@@ -133,10 +133,7 @@ public class LibrarySystem {
         System.out.println("Users successfuly loaded!");
     }
     
-    //=========================================================================
-    
-    //ADDING USERS ============================================================
-    // add users
+    //Add users
     public static void addUser(String user, String pass, String name, String num, String type){
         if(type.equals("Regular")){
             Users newUser = new RegularUser(user, pass, name, num);
@@ -150,15 +147,15 @@ public class LibrarySystem {
         }
     }
     
-    //link NEW user to borrow details
+    //Link NEW user to borrow details
     public static void linkUser(Users user){
         if(!userBorrowMap.containsKey(user)){
             userBorrowMap.put(user, new ArrayList<BorrowDetails>());        
         }
     }
-    //=========================================================================
+ 
     
-    //GETTER ==================================================================
+    //Getters
     //Get borrow details of all users
     public ArrayList<BorrowDetails> getBorrowList(Users user){
         return userBorrowMap.get(user);
@@ -196,9 +193,7 @@ public class LibrarySystem {
             }
         return null;
     }
-    //=========================================================================
     
-    //FEATURES ================================================================
     //Return book and remove from list
     public void returnBook(Users user, Books book){
         int id = book.getId();
@@ -231,8 +226,6 @@ public class LibrarySystem {
         System.out.println("| Book borrowed! Please return it by " + deets.getReturnDate() + ". |");
         System.out.println("+------------------------------------------------+");
     }
-    
-    //=========================================================================
     
     //SAVE TO FILE ============================================================
     //Save users and books to file
@@ -285,9 +278,8 @@ public class LibrarySystem {
             System.err.println("Error writing to file: " + e.getMessage());
         }
     }
-    //=========================================================================
     
-    //DISPLAY =================================================================
+    //DISPLAY
     //Interface
     public void libraryMenu(Users user){
         while(true){
@@ -362,7 +354,7 @@ public class LibrarySystem {
                     bookList.get(number).displayBook();
                 }
                 System.out.println("+-------------------------------------------------------------------------------------+");
-                System.out.println(" Type the ID of the book you want to select: ");
+                System.out.print(" Type the ID of the book you want to select: ");
                 int chosenIndex = sc.nextInt()-1;
                 sc.nextLine();
                 if(chosenIndex < 0 || chosenIndex >= bookList.size()){
@@ -442,26 +434,8 @@ public class LibrarySystem {
             Books book = details.getBorrowedBook();
             System.out.printf("| %-2d | %-39s | %-16s | %-13s | %-11s | %-11s |\n", details.getBorrowID(), book.getTitle(), book.getAuthor(), book.getType(), details.getBorrowDate(), details.getReturnDate());
         }
-        System.out.println("+---------------------------------------------------------------------------------------------+");
+        System.out.println("+-------------------------------------------------------------------------------------------------------------+");
         
-        return;
-    }
-    
-    //Displays all borrowed books by all users [X]
-    public void displayAllBorrowed(){
-        System.out.println(   "+-------------------------------------------------------------------------------------------------------------------+");
-        System.out.println(   "|                                             All Borrowed Books                                                    |");
-        System.out.println(   "+-------------------------------------------------------------------------------------------------------------------+");
-        System.out.println(   "|  Title                         |        Author        |   Borrowed by   | Borrow Date | Return Date |  Contact #  |");
-        System.out.println(   "+-------------------------------------------------------------------------------------------------------------------+");
-        for(Map.Entry<Users, ArrayList<BorrowDetails>> entry : userBorrowMap.entrySet()){
-            Users user = entry.getKey();
-            ArrayList<BorrowDetails> borrowListt = entry.getValue();
-            for(BorrowDetails details : borrowListt){
-                Books book = details.getBorrowedBook();
-                System.out.printf("| %-30s | %-20s | %-15s | %-11s | %-11s | %-11s |", book.getTitle(), book.getAuthor(), user.getName(), details.getBorrowDate(), details.getReturnDate(), user.getNumber());
-            }
-        }
         return;
     }
     
@@ -530,6 +504,4 @@ public class LibrarySystem {
         
         }while(loop);
     }
-    
-    //=========================================================================
 }

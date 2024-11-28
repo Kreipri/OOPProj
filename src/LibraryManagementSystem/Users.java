@@ -10,7 +10,6 @@ import java.util.*;
  * @author 202312049
  */
 
-
 public abstract class Users extends People{
     private String userType; //Regular or Special
     private BorrowDetails borrowDetails;

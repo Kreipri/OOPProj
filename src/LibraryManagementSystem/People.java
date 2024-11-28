@@ -1,13 +1,9 @@
 package LibraryManagementSystem;
 
-
-
-
 /**
  *
  * @author 202312049
  */
-
 
 public class People{
     private String username;

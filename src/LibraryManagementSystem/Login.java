@@ -29,9 +29,6 @@ public class Login {
                 return true;
             }
         }
-//        System.out.println("+-------------------------------------------------+");
-//        System.out.println("| Invalid username or password. Please try again. |");
-//        System.out.println("+-------------------------------------------------+");
         return false;
     }
     
@@ -48,12 +45,12 @@ public class Login {
         return true;
     }
     
-    //getter
+    //Getter
     public Users getLoggedInUser(){
         return loggedInUser;
     }
     
-     //exception handling/error trapping for choices
+    //Exception handling/error trapping for choices
     public static int enterChoice(){
         int choice = 9;
         try{
@@ -64,14 +61,14 @@ public class Login {
         return choice;
     }
     
-    //error message
+    //Error message
     public static void printErr(){
         System.out.println("+-----------------------------------------------+");
         System.out.println("|       Invalid input. Please try again.        |");
         System.out.println("+-----------------------------------------------+");
     }
     
-    //DISPLAY ===============================================================
+    //Interface
     //actual log-in system
     public static Users login(Login login, LibrarySystem lib){
         
@@ -146,9 +143,10 @@ public class Login {
         return null;
     }
     
-    //user signup input of details
-    public static boolean signup(LibrarySystem lib){
+    //User signup input of details
+     public static boolean signup(LibrarySystem lib){
         boolean loop = true;
+        boolean subsubloop = true;
         do{
             System.out.println("+-------------------------------------+");
             System.out.println("|             User Sign-up            |");
@@ -162,21 +160,36 @@ public class Login {
             String pass = sc.nextLine();
             System.out.print(" Enter Name: ");
             String name = sc.nextLine();
-            System.out.print(" Enter Contact Number: ");
-            String cell = sc.nextLine();
+            String cell;
+            do{
+                System.out.print(" Enter Contact Number: ");
+                cell = sc.nextLine();
+                if(!cell.matches("^[0-9]*$")){
+                    System.out.println("+----------------------------------------------+");
+                    System.out.println("|          Please enter only numbers.          |");
+                    System.out.println("+----------------------------------------------+");
+                }else if(cell.length() != 11){
+                    System.out.println("+----------------------------------------------+");
+                    System.out.println("| Please enter a mobile number with 11 digits. |");
+                    System.out.println("+----------------------------------------------+");
+                    continue;
+                }else if(cell.length() == 11){
+                    subsubloop = false;
+                }
+            }while(subsubloop);
             String userType = null;
 
             boolean subloop;
             do{
                 subloop = false;
                 System.out.print(  " Are you a: ");
-                System.out.print("    \n[1] Student"
-                                 + "    \n[2] Person with Disability "
-                                 + "    \n[3] Senior Citizen"
-                                 + "    \n[4] None of the above"
-                                 + "  \nChoice: ");
+                System.out.print("    \n [1] Student"
+                                 + "    \n [2] Person with Disability "
+                                 + "    \n [3] Senior Citizen"
+                                 + "    \n [4] None of the above"
+                                 + "  \n Choice: ");
                 int choice = enterChoice();
-
+                
                 switch(choice){
                     case 1: 
                         userType = "Student";
@@ -204,6 +217,7 @@ public class Login {
         }while(loop);
         
         return true;
+    
     }
    
 }
