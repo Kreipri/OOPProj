@@ -29,6 +29,9 @@ public class LibrarySystem {
         importUsers();
     }
      
+    
+    
+    //IMPORT ===================================================================
     //Import books from file
     public static void importBooks(){
         //check if file exists
@@ -132,7 +135,9 @@ public class LibrarySystem {
         }
         System.out.println("Users successfuly loaded!");
     }
+    //==========================================================================
     
+    //ADD USERS ================================================================
     //Add users
     public static void addUser(String user, String pass, String name, String num, String type){
         if(type.equals("Regular")){
@@ -153,9 +158,9 @@ public class LibrarySystem {
             userBorrowMap.put(user, new ArrayList<BorrowDetails>());        
         }
     }
- 
+    //==========================================================================
     
-    //Getters
+    //GETTERS ==================================================================
     //Get borrow details of all users
     public ArrayList<BorrowDetails> getBorrowList(Users user){
         return userBorrowMap.get(user);
@@ -184,7 +189,7 @@ public class LibrarySystem {
         return null;
     }
     
-    //Checks wheter Borrow id matches and get
+    //Checks wheter Borrow id matches and return
     public BorrowDetails matchBorrowId(Users user, int id){
         for(BorrowDetails item : getBorrowList(user)){
                 if(id == item.getBorrowID()){
@@ -193,6 +198,9 @@ public class LibrarySystem {
             }
         return null;
     }
+    //==========================================================================
+    
+    //FEATURES =================================================================
     
     //Return book and remove from list
     public void returnBook(Users user, Books book){
@@ -226,8 +234,9 @@ public class LibrarySystem {
         System.out.println("| Book borrowed! Please return it by " + deets.getReturnDate() + ". |");
         System.out.println("+------------------------------------------------+");
     }
+    //==========================================================================
     
-    //SAVE TO FILE ============================================================
+    //SAVE TO FILE =============================================================
     //Save users and books to file
     public void save(){
         System.out.println("Saving users and books...");
@@ -279,7 +288,9 @@ public class LibrarySystem {
         }
     }
     
-    //DISPLAY
+    //==========================================================================
+    
+    //DISPLAY ==================================================================
     //Interface
     public void libraryMenu(Users user){
         while(true){
@@ -397,10 +408,12 @@ public class LibrarySystem {
     public void returnBooks(Users user){
         boolean loop = false;
         do{
-        System.out.println("==================================== RETURNING BOOKS ======================================");
+        
+        System.out.println(    "============================================ RETURNING BOOKS ==================================================");
+//        System.out.println(    "+-------------------------------------------------------------------------------------------------------------+");
         userBorrowedBooks(user);
         if(getBorrowList(user).isEmpty()){
-            System.out.println("| No books borrowed yet.                                                                      |");
+            System.out.println("| No books borrowed yet.                                                                                      |");
         }else{
             System.out.print("Enter the ID of the book you want to return [INPUT 0 TO GO BACK]: ");
             int choice = sc.nextInt();
@@ -409,11 +422,25 @@ public class LibrarySystem {
             }
             Books returningBook = matchBookId(choice);
             if( returningBook == null){
-                System.out.println("Book does not exist. Please try again.");
+                System.out.println("+----------------------------------------------+");
+                System.out.println("|    Book does not exist. Please try again.    |");
+                System.out.println("+----------------------------------------------+");
                 loop = true;
-                break;
+                continue;
             }
-            returnBook(user,returningBook);
+            ArrayList<BorrowDetails> borrowListt = userBorrowMap.get(user);
+            for(BorrowDetails item : borrowListt){
+                if(item.getBorrowID() == returningBook.getId()){
+                    returnBook(user,returningBook);
+                    return;
+                }
+            }
+            {
+                System.out.println("+----------------------------------------------+");
+                System.out.println("|     You haven't borrowed that book yet.      |");
+                System.out.println("+----------------------------------------------+");
+            }
+            
         } 
         }while(loop);
         
@@ -504,4 +531,6 @@ public class LibrarySystem {
         
         }while(loop);
     }
+    //==========================================================================
+
 }
