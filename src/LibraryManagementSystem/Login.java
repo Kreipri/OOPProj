@@ -94,7 +94,7 @@ public class Login {
             case 1:
                 boolean loop = true;
                 boolean subloop = false;
-                while(loop == true){
+                while(loop){
                     System.out.println("+----------------------------------+");
                     System.out.println("|            User Login            |");
                     System.out.println("+----------------------------------+");
@@ -118,8 +118,8 @@ public class Login {
                             case 1:
                                 break;
                             case 2:
-                                loop = false;
                                 signup(lib);
+                                loop = true;
                                 break;
                             default:
                                 System.out.println("+-----------------------------------------------+");

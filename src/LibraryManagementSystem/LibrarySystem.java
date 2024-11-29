@@ -61,79 +61,84 @@ public class LibrarySystem {
                         System.out.println("Error to import book");
                     }
                 }
+                System.out.println("Books successfuly loaded!");
                 reader.close();
             } catch (IOException e){
                 System.out.println("Error reading from file: " + e.getMessage());
                 e.printStackTrace();
             }
         } else {
-            System.out.println("No previous data to import.");
+            System.out.println("No previous book data to load.");
         }
-        System.out.println("Books successfuly loaded!");
+        
     }
     
     //Import users from file
     public void importUsers(){
         File userDatabaseFile = new File("userDataBase.txt");
         System.out.println("Looking at: "+ userDatabaseFile.getAbsolutePath());
-        
-        try (BufferedReader reader = new BufferedReader(new FileReader(userDatabaseFile))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split("\\|");
-                String[] bits = parts[0].split(",");
-                //users import
-                String userName = null;
-                if(bits.length != 5){
-                    System.err.println("Invalid user format: "+ line);
-                    continue;
-                }
-                userName = bits[0];
-                String pass = bits[1];
-                String name = bits[2];
-                String num = bits[3];
-                String type = bits[4];
-                
-                //add user
-                addUser(userName, pass, name, num, type);
-                
-                //get user to plug into userborrow map
-                Users user = getUser(userName);
-                userBorrowMap.putIfAbsent(user, new ArrayList<>());
-                ArrayList<BorrowDetails> borrowDeets = userBorrowMap.get(user);                
-              
-                //Borrowed books import
-                for(int i = 1; i <parts.length; i++){
-                    String[] bookDetails = parts[i].split(",");
-                    if(bookDetails.length == 3){
-                        try{
-                            int bookId = Integer.parseInt(bookDetails[0]);
-                            LocalDate borrowDate = LocalDate.parse(bookDetails[1]);
-                            LocalDate returnDate = LocalDate.parse(bookDetails[2]);
-                  
-                            //lmao find the book
-                            Books bookImp = null;
-                            for(Books bookz : bookList){
-                                if(bookId == bookz.getId()){
-                                    bookImp = bookz;
+        if(userDatabaseFile.exists()){
+            try (BufferedReader reader = new BufferedReader(new FileReader(userDatabaseFile))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] parts = line.split("\\|");
+                    String[] bits = parts[0].split(",");
+                    //users import
+                    String userName = null;
+                    if(bits.length != 5){
+                        System.err.println("Invalid user format: "+ line);
+                        continue;
+                    }
+                    userName = bits[0];
+                    String pass = bits[1];
+                    String name = bits[2];
+                    String num = bits[3];
+                    String type = bits[4];
+
+                    //add user
+                    addUser(userName, pass, name, num, type);
+
+                    //get user to plug into userborrow map
+                    Users user = getUser(userName);
+                    userBorrowMap.putIfAbsent(user, new ArrayList<>());
+                    ArrayList<BorrowDetails> borrowDeets = userBorrowMap.get(user);                
+
+                    //Borrowed books import
+                    for(int i = 1; i <parts.length; i++){
+                        String[] bookDetails = parts[i].split(",");
+                        if(bookDetails.length == 3){
+                            try{
+                                int bookId = Integer.parseInt(bookDetails[0]);
+                                LocalDate borrowDate = LocalDate.parse(bookDetails[1]);
+                                LocalDate returnDate = LocalDate.parse(bookDetails[2]);
+
+                                //lmao find the book
+                                Books bookImp = null;
+                                for(Books bookz : bookList){
+                                    if(bookId == bookz.getId()){
+                                        bookImp = bookz;
+                                    }
                                 }
+
+                                borrowDeets.add(new BorrowDetails(bookImp, borrowDate, returnDate));
+                            }catch(NumberFormatException e){
+                                System.err.println("Invalid borrow detail format: " + parts[i]);
+                            }catch(NullPointerException e){
+                                System.err.println("Book not found.");
                             }
-                            
-                            borrowDeets.add(new BorrowDetails(bookImp, borrowDate, returnDate));
-                        }catch(NumberFormatException e){
-                            System.err.println("Invalid borrow detail format: " + parts[i]);
-                        }catch(NullPointerException e){
-                            System.err.println("Book not found.");
                         }
                     }
                 }
+                System.out.println("Borrow details loaded successfully from: "+ userDatabaseFile);
+                reader.close();
+                System.out.println("Users successfuly loaded!");
+            } catch (IOException | NumberFormatException | NullPointerException e) {
+                System.err.println("Error reading from file: " + e.getMessage());
             }
-            System.out.println("Borrow details loaded successfully from: "+ userDatabaseFile);
-            reader.close();
-        } catch (IOException | NumberFormatException | NullPointerException e) {
-            System.err.println("Error reading from file: " + e.getMessage());
+        }else{
+            System.out.println("No previous user data to load.");
         }
-        System.out.println("Users successfuly loaded!");
+        
     }
     //==========================================================================
     
@@ -249,30 +254,46 @@ public class LibrarySystem {
     //Update users list in file
     public void saveUsers(){
         File userDataBaseFile = new File("userDataBase.txt");
-         try (BufferedWriter writer = new BufferedWriter(new FileWriter(userDataBaseFile))) {
-             for(Map.Entry<Users, ArrayList<BorrowDetails>> entry : userBorrowMap.entrySet()){
-                 Users user = entry.getKey();
-                 ArrayList<BorrowDetails> borrowList = entry.getValue();
-                 if(user != null){
-                     //Write user details
-                     writer.write(String.format("%s,%s,%s,%s,%s", user.getUser(),user.getPassword(), user.getName(), user.getNumber(), user.getUserType()));
-                   
-                     for(BorrowDetails item : borrowList){
-                         writer.write(String.format("|%d,%s,%s", item.getBorrowID(), item.getBorrowDate(), item.getReturnDate()));
-                     }
-                     writer.newLine();
-                 }
-                 
-             }
-            System.out.println("User details saved successfully to " + userDataBaseFile);
-        }catch (IOException e) {
-            System.err.println("Error writing to file: " + e.getMessage());
+        try{
+            userDataBaseFile.createNewFile();
+        }catch(IOException e){
+            System.out.println("Could not create save file.");
+            e.printStackTrace();
+            return;
         }
+        
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(userDataBaseFile))) {
+            for(Map.Entry<Users, ArrayList<BorrowDetails>> entry : userBorrowMap.entrySet()){
+                Users user = entry.getKey();
+                ArrayList<BorrowDetails> borrowList = entry.getValue();
+                if(user != null){
+                    //Write user details
+                    writer.write(String.format("%s,%s,%s,%s,%s", user.getUser(),user.getPassword(), user.getName(), user.getNumber(), user.getUserType()));
+
+                    for(BorrowDetails item : borrowList){
+                        writer.write(String.format("|%d,%s,%s", item.getBorrowID(), item.getBorrowDate(), item.getReturnDate()));
+                    }
+                    writer.newLine();
+                }
+
+            }
+           System.out.println("User details saved successfully to " + userDataBaseFile);
+       }catch (IOException e) {
+           System.err.println("Error writing to file: " + e.getMessage());
+       }
+         
     }
     
     //Updates book list in file
     public void saveBooks(){
         File libraryFile = new File("libraryFile.txt");
+        try{
+            libraryFile.createNewFile();
+        }catch(IOException e){
+            System.out.println("Could not create save file.");
+            e.printStackTrace();
+            return;
+        }
          try (BufferedWriter writer = new BufferedWriter(new FileWriter(libraryFile))) {
              for(Books book : bookList){
                  if(book != null){
@@ -413,7 +434,7 @@ public class LibrarySystem {
 //        System.out.println(    "+-------------------------------------------------------------------------------------------------------------+");
         userBorrowedBooks(user);
         if(getBorrowList(user).isEmpty()){
-            System.out.println("| No books borrowed yet.                                                                                      |");
+            
         }else{
             System.out.print("Enter the ID of the book you want to return [INPUT 0 TO GO BACK]: ");
             int choice = sc.nextInt();
@@ -449,13 +470,13 @@ public class LibrarySystem {
     //Displays borrowed books by a user
     public void userBorrowedBooks(Users user){
 
-        System.out.println("+-------------------------------------------------------------------------------------------------------------+");
-        System.out.println("|                                              Borrowed Books                                                 |");
-        System.out.println("+-------------------------------------------------------------------------------------------------------------+");
-        System.out.println("| ID | Title                                   |      Author      |      Type     | Borrow Date | Return Date |");
-        System.out.println("+-------------------------------------------------------------------------------------------------------------+");
+        System.out.println(    "+-------------------------------------------------------------------------------------------------------------+");
+        System.out.println(    "|                                              Borrowed Books                                                 |");
+        System.out.println(    "+-------------------------------------------------------------------------------------------------------------+");
+        System.out.println(    "| ID | Title                                   |      Author      |      Type     | Borrow Date | Return Date |");
+        System.out.println(    "+-------------------------------------------------------------------------------------------------------------+");
         if(getBorrowList(user).isEmpty()){
-            System.out.println("| No books borrowed yet.                                                                      |");
+            System.out.println("| No books borrowed yet.                                                                                      |");
         }
         for(BorrowDetails details : getBorrowList(user)){
             Books book = details.getBorrowedBook();
@@ -471,10 +492,10 @@ public class LibrarySystem {
         System.out.println("|                                     Books                                           |");
         System.out.println("+-------------------------------------------------------------------------------------+");
         System.out.println("| ID | Title                                    |        Author       |      Type     |");
-        if(bookList != null){
+        if(!bookList.isEmpty()){
              displayBooks();
         }else{
-            System.out.println("No books available. Please contact your librarian.");   
+            System.out.println("| No books available. Please contact your librarian.                                  |");   
         }
         System.out.println("+-------------------------------------------------------------------------------------+");
     }
